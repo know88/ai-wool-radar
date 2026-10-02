@@ -182,6 +182,49 @@ jobs:
           GITHUB_ACTIONS: true
         run: uv run python -m trendradar
 
+      # ── 心跳邮件补丁：每 24 次运行（约每天一封）证明云端雷达存活 ──
+      - name: Heartbeat email every 24 runs
+        if: success()
+        env:
+          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          EMAIL_SMTP_SERVER: ${{ secrets.EMAIL_SMTP_SERVER }}
+          EMAIL_SMTP_PORT: ${{ secrets.EMAIL_SMTP_PORT }}
+          RUN_NUMBER: ${{ github.run_number }}
+        run: |
+          python3 - <<'PY'
+          import os, smtplib, ssl
+          from email.mime.text import MIMEText
+          n = int(os.environ.get("RUN_NUMBER", "0"))
+          if n % 24 != 0:
+              print(f"run_number {n} 不是 24 的倍数，本次跳过心跳")
+              raise SystemExit(0)
+          host = os.environ["EMAIL_SMTP_SERVER"]
+          port = int(os.environ["EMAIL_SMTP_PORT"])
+          user = os.environ["EMAIL_FROM"]
+          pwd = os.environ["EMAIL_PASSWORD"]
+          to = [x.strip() for x in os.environ["EMAIL_TO"].split(",") if x.strip()]
+          msg = MIMEText(
+              f"云端雷达第 {n} 次运行完成，一切正常。\n"
+              "本邮件每 24 次运行（约每天一封）自动发送，用于证明云端雷达存活；\n"
+              "若连续两天收不到心跳，请检查 GitHub Actions（本地每日 14:00 的健康检查也会告警）。",
+              "plain", "utf-8")
+          msg["Subject"] = f"[心跳] AI羊毛云端雷达正常运行 (#{n})"
+          msg["From"] = user
+          msg["To"] = ", ".join(to)
+          ctx = ssl.create_default_context()
+          if port == 465:
+              s = smtplib.SMTP_SSL(host, port, timeout=30, context=ctx)
+          else:
+              s = smtplib.SMTP(host, port, timeout=30)
+              s.ehlo(); s.starttls(context=ctx); s.ehlo()
+          s.login(user, pwd)
+          s.sendmail(user, to, msg.as_string())
+          s.quit()
+          print("heartbeat email sent")
+          PY
+
       # --------------------------------------------------------------------------------
       # ☁️ CLOUDFLARE PAGES DEPLOY / 部署到 Cloudflare Pages（可选）
       # --------------------------------------------------------------------------------
