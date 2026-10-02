@@ -133,6 +133,19 @@ jobs:
             exit 1
           fi
 
+      # ── 数据持久化补丁（增量模式必需）─────────────────────────────
+      # TrendRadar 增量模式需要跨运行比对历史数据；Actions 的磁盘每次运行
+      # 都是空白，这里用 actions/cache 把 output/ 目录滚动缓存起来：
+      # 恢复上一轮数据 → 爬虫比对 → 运行结束后自动存回新缓存。
+      - name: Restore data cache
+        if: success()
+        uses: actions/cache@v4
+        with:
+          path: output
+          key: trendradar-data-${{ github.run_id }}
+          restore-keys: |
+            trendradar-data-
+
       - name: Run crawler
         if: success()
         env:
