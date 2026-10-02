@@ -38,9 +38,6 @@
 +/AI|大模型|模型|编程|智能体|Token|积分|注册送|注册即送/
 
 # 组5：主流厂商降价/开放/公测（新模型免费期常随发布而来）
-[部署验证]
-国庆
-
 [厂商动态]
 +/智谱|ZCode|GLM|DeepSeek|通义|Qwen|百炼|魔搭|豆包|混元|讯飞|商汤|Kimi|MiniMax|Qoder|Trae|WorkBuddy|CodeBuddy|Freebuff|MonkeyCode/
 +/降价|半价|打折|开放|公测|上线|发布|免费期/
