@@ -137,18 +137,6 @@ rss:
       enabled: false                  # 禁用
       # max_age_days: 3               # 示例：推送 3 天内的文章（更新较慢的博客）
      
-    - id: "linux-do"
-      name: "Linux.do 最新帖"
-      url: "https://linux.do/latest.rss"
-
-    - id: "v2ex-ai"
-      name: "V2EX AI 节点"
-      url: "https://www.v2ex.com/feed/tab/ai.xml"
-
-    - id: "nodeseek"
-      name: "NodeSeek 帖子"
-      url: "https://www.nodeseek.com/RSS"
-
     - id: "yahoo-finance"
       name: "雅虎财经"
       url: "https://finance.yahoo.com/news/rssindex"
