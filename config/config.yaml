@@ -137,9 +137,22 @@ rss:
       enabled: false                  # 禁用
       # max_age_days: 3               # 示例：推送 3 天内的文章（更新较慢的博客）
      
+    - id: "linux-do"
+      name: "Linux.do 最新帖"
+      url: "https://linux.do/latest.rss"
+
+    - id: "v2ex-ai"
+      name: "V2EX AI 节点"
+      url: "https://www.v2ex.com/feed/tab/ai.xml"
+
+    - id: "nodeseek"
+      name: "NodeSeek 帖子"
+      url: "https://www.nodeseek.com/RSS"
+
     - id: "yahoo-finance"
       name: "雅虎财经"
       url: "https://finance.yahoo.com/news/rssindex"
+      enabled: false                  # 财经源与羊毛需求无关，已停用
 
     # 自定义源示例
     # - id: "custom-feed"
@@ -153,7 +166,7 @@ rss:
 # 4. 报告模式
 # ===============================================================
 report:
-  mode: "current"                     # 报告模式（开启 schedule 后作为默认值，会被 timeline 时段覆盖）
+  mode: "incremental"                 # 报告模式（开启 schedule 后作为默认值，会被 timeline 时段覆盖）
                                       # daily = 当日汇总，按时推送当天所有匹配新闻（会包含之前推过的）
                                       # current = 当前榜单，按时推送当前在榜的匹配新闻（持续在榜的每次都出现）
                                       # incremental = 增量监控，只推送新增内容，零重复（没有新增时不推送）
@@ -240,7 +253,7 @@ display:
 
     rss: true                         # RSS 订阅区域（true=显示并分析, false=隐藏并跳过分析）
     standalone: false                 # 独立展示区：完整热榜/RSS，不受关键词过滤（true=显示, false=隐藏）
-    ai_analysis: true                 # AI 分析区域（true=显示, false=隐藏）
+    ai_analysis: false                # AI 分析区域（true=显示, false=隐藏）——当前未配 AI Key，先关闭；配好 AI_API_KEY 后可改 true
 
   # 独立展示区：将指定平台/RSS 完整展示，不受关键词过滤
   # 推送展示由 regions.standalone 控制，AI 分析由 ai_analysis.include_standalone 控制
@@ -288,7 +301,7 @@ notification:
 
     ntfy:
       server_url: "https://ntfy.sh"   # ntfy 服务器地址（可改为自托管）
-      topic: ""                       # ntfy 主题名称
+      topic: ""  # ntfy 主题名称（手机装 ntfy App 订阅此同名主题即可接收推送）
       token: ""                       # ntfy 访问令牌（可选，用于私有主题）
 
     bark:
@@ -411,7 +424,7 @@ ai:
 # 9. AI 分析功能（模型配置见上方 ai 段）
 # ===============================================================
 ai_analysis:
-  enabled: true                     # 是否启用 AI 分析（true=启用, false=关闭）—— 总开关
+  enabled: false                     # 是否启用 AI 分析（true=启用, false=关闭）—— 总开关
                                     # 开启 schedule 后此项仍为总开关：false=永远不分析，true=由调度控制
 
   language: "Chinese"               # 分析报告语言（如 "English", "Korean", "法语"）
